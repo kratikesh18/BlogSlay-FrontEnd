@@ -1,7 +1,5 @@
 import "./App.css";
-import Navbar from "./Components/NavBar/Navbar";
 import { Routes, Route } from "react-router-dom";
-
 import Layout from "./Layout";
 import UserContextProvider from "./context/UserContextProvider";
 import { CreatePost, Home, Login, NotFound, SignUp } from "./Pages";
@@ -14,7 +12,7 @@ function App() {
     <UserContextProvider>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
+          <Route path="/home" index element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/SignUp" element={<SignUp />} />
           <Route path="/create-post" element={<CreatePost />} />

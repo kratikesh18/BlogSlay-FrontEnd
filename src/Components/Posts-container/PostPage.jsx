@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import parse from "html-react-parser";
 import { format } from "date-fns";
 import { UserContext } from "../../context/UserContext";
+import Button from "../utilComponents/Button";
 
 function PostPage() {
   const { id } = useParams();
@@ -15,7 +16,7 @@ function PostPage() {
     setLoading(true);
     // endpoint for fetching the data of the current post using id Param
     const fetchPost = async () => {
-      fetch(`http://localhost:4000/api/v1/user/post/${id}`, {
+      fetch(`https://blogslay-backend.onrender.com/api/v1/user/post/${id}`, {
         method: "GET",
       })
         .then((response) => response.json())
@@ -77,6 +78,28 @@ function PostPage() {
         </div>
 
         <div className="">{parse(postInfo.content)}</div>
+
+        <div className=" flex flex-col gap-3 mt-10">
+          <h1 className="text-xl font-semibold">Write a Comment</h1>
+          <textarea
+            cols="30"
+            rows="4"
+            placeholder="Write Your Thoughts..."
+            className="shadow-xl border-2 px-4 py-2 rounded-md"
+          />
+          <Button
+            className={"py-[0.6rem] px-3 text-sm "}
+            text={"Post Comment"}
+          />
+        </div>
+        <div>
+          <h1 className="font-semibold text-xl ">Comments</h1>
+          <div className="border-4 flex flex-col gap-1 p-3">
+            <h3 className="text-lg ">Very Helpful Post.. Great Content!</h3>
+            <span>Pratiksha</span>
+            <time>Feb 24 2024 12:34</time>
+          </div>
+        </div>
       </div>
     )
   );

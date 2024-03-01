@@ -16,12 +16,15 @@ function Login() {
   const handleLogin = async (e) => {
     setLoading(true);
     e.preventDefault();
-    const response = await fetch("http://localhost:4000/api/v1/user/login", {
-      method: "POST",
-      body: JSON.stringify({ username, password }),
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-    });
+    const response = await fetch(
+      "https://blogslay-backend.onrender.com/api/v1/user/login",
+      {
+        method: "POST",
+        body: JSON.stringify({ username, password }),
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
 
     if (response.ok) {
       toast.success("Successs! loggin in ");

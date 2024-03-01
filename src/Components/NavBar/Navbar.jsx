@@ -26,7 +26,7 @@ function Navbar() {
         );
 
         if (!response.ok) {
-          throw new Error("Failed to fetch the data");
+          throw new Error("Failed to fetch the data", response.headers);
         }
         const userData = await response.json();
         setUserInfo(userData);
@@ -40,7 +40,7 @@ function Navbar() {
 
   const handleLogout = (e) => {
     //here we just have to invalidate the cookie
-    fetch("http://localhost:4000/api/v1/user/logout", {
+    fetch("https://blogslay-backend.onrender.com/api/v1/user/logout", {
       method: "POST",
       credentials: "include",
     });
@@ -58,6 +58,9 @@ function Navbar() {
         <nav className="flex">
           {username && (
             <ul className="flex gap-3 ">
+            <li>
+              Hello, {username}
+            </li>
               <li>
                 <NavLink to={"/create-post"}>Create New Post</NavLink>
               </li>

@@ -4,7 +4,7 @@ import PostCard from "./PostCard";
 function PostsContainer() {
   const [allposts, setAllposts] = useState([]);
   useEffect(() => {
-    fetch("http://localhost:4000/api/v1/user/allposts", {
+    fetch("https://blogslay-backend.onrender.com/api/v1/user/allposts", {
       method: "GET",
     })
       .then((response) => response.json())

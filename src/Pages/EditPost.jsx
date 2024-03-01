@@ -20,7 +20,7 @@ function EditPost() {
     async function fetchAndSetData() {
       setLoading(true);
       const response = await fetch(
-        `http://localhost:4000/api/v1/user/post/${id}`
+        `https://blogslay-backend.onrender.com/api/v1/user/post/${id}`
       );
 
       const data = await response.json();
@@ -42,11 +42,11 @@ function EditPost() {
     newData.set("summary", summary);
     newData.set("content", content);
     newData.set("id", id);
-    
+
     if (userFiles) {
       newData.set("newBlogImage", userFiles);
     }
-    
+
     try {
       setLoading(true);
       const response = await fetch(
@@ -65,7 +65,6 @@ function EditPost() {
     } catch (error) {
       console.log("Error while updating the post ", error.message);
     }
-  
   };
 
   if (loading) {

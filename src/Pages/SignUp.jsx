@@ -14,7 +14,7 @@ function SignUp() {
     e.preventDefault();
     try {
       const response = await fetch(
-        "http://localhost:4000/api/v1/user/register",
+        "https://blogslay-backend.onrender.com/api/v1/user/register",
         {
           method: "POST",
           body: JSON.stringify({ username, email, password }),

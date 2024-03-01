@@ -21,7 +21,7 @@ function CreatePost() {
     data.set("coverImage", userFiles);
 
     const response = await fetch(
-      "http://localhost:4000/api/v1/user/createNewPost",
+      "https://blogslay-backend.onrender.com/api/v1/user/createNewPost",
       {
         method: "POST",
         body: data,
