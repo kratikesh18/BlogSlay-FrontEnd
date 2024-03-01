@@ -5,6 +5,8 @@ import "react-quill/dist/quill.snow.css";
 import Editor from "../Components/utilComponents/Editor";
 
 function CreatePost() {
+  const url ="https://blogslay-backend.onrender.com"
+  // const url = "http://localhost:4000";
   const [title, setTitle] = useState("");
   const [summary, setSummary] = useState("");
   const [content, setContent] = useState("");
@@ -20,14 +22,11 @@ function CreatePost() {
     data.set("content", content);
     data.set("coverImage", userFiles);
 
-    const response = await fetch(
-      "https://blogslay-backend.onrender.com/api/v1/user/createNewPost",
-      {
-        method: "POST",
-        body: data,
-        credentials: "include",
-      }
-    );
+    const response = await fetch(`${url}/api/v1/user/createNewPost`, {
+      method: "POST",
+      body: data,
+      credentials: "include",
+    });
 
     if (response.ok) {
       toast.success("Post Created");

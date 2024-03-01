@@ -3,6 +3,8 @@ import Button from "../Components/utilComponents/Button";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 function SignUp() {
+  const url ="https://blogslay-backend.onrender.com"
+  // const url = "http://localhost:4000";
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
@@ -13,15 +15,12 @@ function SignUp() {
   const handleSignUp = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(
-        "https://blogslay-backend.onrender.com/api/v1/user/register",
-        {
-          method: "POST",
-          body: JSON.stringify({ username, email, password }),
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-        }
-      );
+      const response = await fetch(`${url}/api/v1/user/register`, {
+        method: "POST",
+        body: JSON.stringify({ username, email, password }),
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
       if (response) {
         response.json().then((data) => {
           setUserInfo(data.data);

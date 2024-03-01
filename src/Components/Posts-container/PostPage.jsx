@@ -6,6 +6,8 @@ import { UserContext } from "../../context/UserContext";
 import Button from "../utilComponents/Button";
 
 function PostPage() {
+  const url ="https://blogslay-backend.onrender.com"
+  // const url = "http://localhost:4000";
   const { id } = useParams();
   const [postInfo, setPostInfo] = useState(null);
   const { userInfo } = useContext(UserContext);
@@ -16,7 +18,7 @@ function PostPage() {
     setLoading(true);
     // endpoint for fetching the data of the current post using id Param
     const fetchPost = async () => {
-      fetch(`https://blogslay-backend.onrender.com/api/v1/user/post/${id}`, {
+      fetch(`${url}/api/v1/user/post/${id}`, {
         method: "GET",
       })
         .then((response) => response.json())

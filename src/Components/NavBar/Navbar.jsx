@@ -4,7 +4,8 @@ import { UserContext } from "../../context/UserContext.js";
 
 function Navbar() {
   const { userInfo, setUserInfo } = useContext(UserContext);
-
+  const url = "https://blogslay-backend.onrender.com";
+  // const url = "http://localhost:4000";
   // useEffect(() => {
   //   fetch("http://localhost:4000/api/v1/user/profile", {
   //     credentials: "include",
@@ -18,12 +19,9 @@ function Navbar() {
   useEffect(() => {
     async function fetchUserData() {
       try {
-        const response = await fetch(
-          "http://localhost:4000/api/v1/user/profile",
-          {
-            credentials: "include",
-          }
-        );
+        const response = await fetch(`${url}/api/v1/user/profile`, {
+          credentials: "include",
+        });
 
         if (!response.ok) {
           throw new Error("Failed to fetch the data", response.headers);
@@ -40,7 +38,7 @@ function Navbar() {
 
   const handleLogout = (e) => {
     //here we just have to invalidate the cookie
-    fetch("https://blogslay-backend.onrender.com/api/v1/user/logout", {
+    fetch(`${url}/api/v1/user/logout`, {
       method: "POST",
       credentials: "include",
     });
@@ -58,9 +56,7 @@ function Navbar() {
         <nav className="flex">
           {username && (
             <ul className="flex gap-3 ">
-            <li>
-              Hello, {username}
-            </li>
+              <li>Hello, {username}</li>
               <li>
                 <NavLink to={"/create-post"}>Create New Post</NavLink>
               </li>

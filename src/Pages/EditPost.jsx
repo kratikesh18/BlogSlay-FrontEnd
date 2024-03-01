@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import Editor from "../Components/utilComponents/Editor";
 import { useParams, useNavigate } from "react-router-dom";
 function EditPost() {
+  const url ="https://blogslay-backend.onrender.com"
+  // const url = "http://localhost:4000";
   const [title, setTitle] = useState("");
   const [summary, setSummary] = useState("");
   const [content, setContent] = useState("");
@@ -19,9 +21,7 @@ function EditPost() {
   useEffect(() => {
     async function fetchAndSetData() {
       setLoading(true);
-      const response = await fetch(
-        `https://blogslay-backend.onrender.com/api/v1/user/post/${id}`
-      );
+      const response = await fetch(`${url}/api/v1/user/post/${id}`);
 
       const data = await response.json();
 
@@ -49,14 +49,11 @@ function EditPost() {
 
     try {
       setLoading(true);
-      const response = await fetch(
-        "http://localhost:4000/api/v1/user/updatePost",
-        {
-          method: "PUT",
-          credentials: "include",
-          body: newData,
-        }
-      );
+      const response = await fetch(`${url}/api/v1/user/updatePost`, {
+        method: "PUT",
+        credentials: "include",
+        body: newData,
+      });
 
       if (response.ok) {
         navigate(`/post/${id}`);
