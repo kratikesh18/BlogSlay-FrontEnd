@@ -1,14 +1,18 @@
 import React, { useContext, useState } from "react";
 import Button from "../Components/utilComponents/Button";
-import { useNavigate } from "react-router-dom";
-import { UserContext } from "../context/UserContext";
+import { Link, useNavigate } from "react-router-dom";
+
+import { useDispatch } from "react-redux";
+import { login } from "../store/slices/authSlice";
 function SignUp() {
-  const url ="https://blogslay-backend.onrender.com"
-  // const url = "http://localhost:4000";
+  // const url ="https://blogslay-backend.onrender.com"
+  const url = import.meta.env.VITE_BACKEND_URL
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const { userInfo, setUserInfo } = useContext(UserContext);
+
+  const dispatch = useDispatch();
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -23,7 +27,8 @@ function SignUp() {
       });
       if (response) {
         response.json().then((data) => {
-          setUserInfo(data.data);
+          dispatch(login(data?.data));
+
           navigate("/");
         });
       }
@@ -31,6 +36,7 @@ function SignUp() {
       setError(error.message);
     }
   };
+
   return (
     <div className="w-full">
       <form
@@ -38,6 +44,12 @@ function SignUp() {
         onSubmit={handleSignUp}
       >
         <h1 className="text-2xl font-bold">Create Account</h1>
+        <p>
+          Have an Account{" "}
+          <Link className="underline text-lg" to={"/login"}>
+            Login.
+          </Link>
+        </p>
         {error && <p className="text-red-600 text-lg font-semibold">{error}</p>}
         <input
           type="text"

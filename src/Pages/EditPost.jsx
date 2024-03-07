@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Editor from "../Components/utilComponents/Editor";
 import { useParams, useNavigate } from "react-router-dom";
+import Button from "../Components/utilComponents/Button";
+
 function EditPost() {
-  const url ="https://blogslay-backend.onrender.com"
-  // const url = "http://localhost:4000";
+  // const url ="https://blogslay-backend.onrender.com"
+  const url = import.meta.env.VITE_BACKEND_URL
+
   const [title, setTitle] = useState("");
   const [summary, setSummary] = useState("");
   const [content, setContent] = useState("");
@@ -13,10 +16,6 @@ function EditPost() {
   const { id } = useParams();
 
   const navigate = useNavigate();
-
-  const handleOnChangeFile = (e) => {
-    setUserFiles(e.target.files[0]);
-  };
 
   useEffect(() => {
     async function fetchAndSetData() {
@@ -28,12 +27,14 @@ function EditPost() {
       setTitle(data.data.title);
       setSummary(data.data.summary);
       setContent(data.data.content);
-
-      // console.log(data.data);
       setLoading(false);
     }
     fetchAndSetData();
   }, []);
+
+  const handleOnChangeFile = (e) => {
+    setUserFiles(e.target.files[0]);
+  };
 
   const handleUpdatePost = async (e) => {
     e.preventDefault();
@@ -64,6 +65,20 @@ function EditPost() {
     }
   };
 
+  const handleDelete = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      fetch(`${url}/api/v1/user/delete/${id}`, {
+        method: "DELETE",
+        body: id,
+      }).then(navigate("/"));
+    } catch (error) {
+      console.log("Error while Deleting the post");
+    }
+    setLoading(false);
+  };
+
   if (loading) {
     <div className="h-screen w-full flex justify-center items-center">
       <span class="loader"></span>
@@ -79,6 +94,7 @@ function EditPost() {
         placeholder="title"
         name="title"
         value={title}
+        minLength={50}
         onChange={(e) => setTitle(e.target.value)}
         className="border-2 border-black px-3 rounded-md py-1 font-semibold"
       />
@@ -87,6 +103,7 @@ function EditPost() {
         placeholder="summary"
         name="summary"
         value={summary}
+        minLength={100}
         onChange={(e) => setSummary(e.target.value)}
         className="border-2 border-black px-3 rounded-md py-1 font-semibold"
       />
@@ -97,9 +114,19 @@ function EditPost() {
         className="border-2 border-black rounded-md px-3 py-1"
       />
       <Editor onChange={setContent} value={content} />
-      <button className="bg-black text-white px-4 w-fit mx-auto py-2 font-semibold rounded-md hover:bg-black/85 duration-75">
-        Update Post
-      </button>
+      <div className="flex gap-4 self-center">
+        <Button
+          type={"submit"}
+          text={"Update Post"}
+          className={"self-center"}
+        />
+        <button
+          onClick={handleDelete}
+          className="py-3 px-5 bg-red-900 hover:bg-red-600 font-bold rounded-xl text-white w-fit"
+        >
+          Delete Post
+        </button>
+      </div>
     </form>
   );
 }

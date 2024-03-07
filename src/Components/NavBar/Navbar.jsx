@@ -1,20 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { UserContext } from "../../context/UserContext.js";
+import { useDispatch } from "react-redux";
+import { login, logout } from "../../store/slices/authSlice.js";
+import { useSelector } from "react-redux";
 
 function Navbar() {
-  const { userInfo, setUserInfo } = useContext(UserContext);
-  const url = "https://blogslay-backend.onrender.com";
-  // const url = "http://localhost:4000";
-  // useEffect(() => {
-  //   fetch("http://localhost:4000/api/v1/user/profile", {
-  //     credentials: "include",
-  //   }).then((response) =>
-  //     response.json().then((userData) => {
-  //       setUserInfo(userData);
-  //     })
-  //   );
-  // });
+  const url = import.meta.env.VITE_BACKEND_URL
+
+  const dispatch = useDispatch();
+  const { status, userdata } = useSelector((state) => state.authSlice);
 
   useEffect(() => {
     async function fetchUserData() {
@@ -27,7 +21,8 @@ function Navbar() {
           throw new Error("Failed to fetch the data", response.headers);
         }
         const userData = await response.json();
-        setUserInfo(userData);
+
+        dispatch(login(userData));
       } catch (error) {
         console.log("Error while fetching the data", error);
       }
@@ -42,10 +37,13 @@ function Navbar() {
       method: "POST",
       credentials: "include",
     });
-    setUserInfo(null);
+    dispatch(logout());
   };
 
-  const username = userInfo?.username;
+  // const username = userInfo?.username;
+  const username = userdata?.username;
+  // console.log(username);
+
   return (
     <div>
       <header className="flex text-lg items-center justify-between my-4 w-[90%] mx-auto px-4 py-3 border-2 border-black rounded-md ">
@@ -54,18 +52,20 @@ function Navbar() {
         </Link>
 
         <nav className="flex">
-          {username && (
+          {username && status && (
             <ul className="flex gap-3 ">
-              <li>Hello, {username}</li>
               <li>
                 <NavLink to={"/create-post"}>Create New Post</NavLink>
               </li>
               <li>
-                <button onClick={handleLogout}>Logout</button>
+                <NavLink to={"/your-posts"}>Your Posts</NavLink>
+              </li>
+              <li>
+                <NavLink to={"/profile"}>Hello, {username}</NavLink>
               </li>
             </ul>
           )}
-          {!username && (
+          {!status && (
             <ul className="flex gap-3 ">
               <li>
                 <NavLink to={"/login"}>Login</NavLink>
@@ -82,3 +82,14 @@ function Navbar() {
 }
 
 export default Navbar;
+
+// ************************ GARBAGE CODE **************************//
+// useEffect(() => {
+//   fetch("http://localhost:4000/api/v1/user/profile", {
+//     credentials: "include",
+//   }).then((response) =>
+//     response.json().then((userData) => {
+//       setUserInfo(userData);
+//     })
+//   );
+// });

@@ -2,36 +2,70 @@ import React, { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import parse from "html-react-parser";
 import { format } from "date-fns";
-import { UserContext } from "../../context/UserContext";
 import Button from "../utilComponents/Button";
+import { useSelector } from "react-redux";
 
 function PostPage() {
-  const url ="https://blogslay-backend.onrender.com"
-  // const url = "http://localhost:4000";
-  const { id } = useParams();
-  const [postInfo, setPostInfo] = useState(null);
-  const { userInfo } = useContext(UserContext);
+  // const url ="https://blogslay-backend.onrender.com"
+  const url = import.meta.env.VITE_BACKEND_URL
 
+  const userdata = useSelector((state) => state.authSlice.userdata);
+
+  const { id } = useParams();
+
+  const [postInfo, setPostInfo] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
+  const [comment, setComment] = useState("this Post is amazing");
+  const [allComments, setAllComments] = useState([]);
+
+  const handlePostComment = async (e) => {
+    e.preventDefault();
+
     setLoading(true);
-    // endpoint for fetching the data of the current post using id Param
-    const fetchPost = async () => {
-      fetch(`${url}/api/v1/user/post/${id}`, {
+
+    const response = await fetch(`${url}/api/v1/user/addComment`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ comment, id }),
+      credentials: "include",
+    });
+    if (response.ok) {
+      setComment("");
+      setLoading(false);
+      fetchPost();
+    }
+  };
+
+  const fetchPost = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${url}/api/v1/user/post/${id}`, {
         method: "GET",
-      })
-        .then((response) => response.json())
-        .then((data) => setPostInfo(data.data));
-    };
+      });
+
+      const data = await response.json();
+      if (data) {
+        const { comments } = data?.data;
+        setAllComments(comments);
+        setPostInfo(data?.data);
+      }
+    } catch (error) {
+      console.log("Error while Fetching the posts", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
     fetchPost();
-    setLoading(false);
   }, []);
 
   if (loading) {
     return (
       <div className="h-screen w-full flex justify-center items-center">
-        <span class="loader"></span>
+        <span className="loader"></span>
       </div>
     );
   }
@@ -39,18 +73,18 @@ function PostPage() {
   return (
     postInfo && (
       <div className="flex flex-col w-[80%] mx-auto  gap-3 p-4">
-        <h1 className="text-3xl font-bold text-center w-[60%] self-center">
+        <h1 className="text-3xl font-bold text-center self-center">
           {postInfo.title}
         </h1>
         <div className="flex flex-col self-center justify-center items-center text-gray-800">
           <time>
-            {format(new Date(postInfo.createdAt), "MMM d, yyyy HH:mm")}
+            {format(new Date(postInfo?.createdAt), "MMM d, yyyy HH:mm")}
           </time>
           <h2 className="text-black font-semibold">
-            By {postInfo.author.username}
+            By {postInfo.author?.username}
           </h2>
         </div>
-        {userInfo._id === postInfo.author._id && (
+        {userdata._id === postInfo.author._id && (
           <Link to={`/edit/${postInfo._id}`} className=" self-center ">
             <div className=" bg-black font-semibold text-white w-fit px-4 py-2 gap-2 rounded-md flex justify-center items-center ">
               <svg
@@ -86,20 +120,39 @@ function PostPage() {
           <textarea
             cols="30"
             rows="4"
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
             placeholder="Write Your Thoughts..."
-            className="shadow-xl border-2 px-4 py-2 rounded-md"
+            className="shadow-xl border-2 px-4 py-2 rounded-md text-lg"
           />
           <Button
             className={"py-[0.6rem] px-3 text-sm "}
             text={"Post Comment"}
+            eventFunc={handlePostComment}
           />
         </div>
+
         <div>
           <h1 className="font-semibold text-xl ">Comments</h1>
-          <div className="border-4 flex flex-col gap-1 p-3">
-            <h3 className="text-lg ">Very Helpful Post.. Great Content!</h3>
-            <span>Pratiksha</span>
-            <time>Feb 24 2024 12:34</time>
+          <div className="flex flex-col gap-3 pl-4">
+            {allComments?.length > 0 ? (
+              allComments?.map((comment) => (
+                <div
+                  className="border-4 flex flex-col gap-1 p-3"
+                  key={comment._id}
+                >
+                  <h1 className="text-lg">{comment.text}</h1>
+                  <span>{comment.author?.username}</span>
+                  <time>
+                    {format(new Date(comment.createdAt), "MMM d, yyyy HH:mm")}
+                  </time>
+                </div>
+              ))
+            ) : (
+              <div className="mx-auto mt-10">
+                <h1 className="text-xl">No Comments yet... </h1>
+              </div>
+            )}
           </div>
         </div>
       </div>

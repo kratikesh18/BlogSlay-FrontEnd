@@ -5,8 +5,9 @@ import "react-quill/dist/quill.snow.css";
 import Editor from "../Components/utilComponents/Editor";
 
 function CreatePost() {
-  const url ="https://blogslay-backend.onrender.com"
-  // const url = "http://localhost:4000";
+  // const url ="https://blogslay-backend.onrender.com"
+  const url = import.meta.env.VITE_BACKEND_URL
+
   const [title, setTitle] = useState("");
   const [summary, setSummary] = useState("");
   const [content, setContent] = useState("");
@@ -48,6 +49,7 @@ function CreatePost() {
         placeholder="title"
         name="title"
         value={title}
+        minLength={50}
         onChange={(e) => setTitle(e.target.value)}
         className="border-2 border-black px-3 rounded-md py-1 font-semibold"
       />
@@ -56,15 +58,19 @@ function CreatePost() {
         placeholder="summary"
         name="summary"
         value={summary}
+        minLength={100}
         onChange={(e) => setSummary(e.target.value)}
         className="border-2 border-black px-3 rounded-md py-1 font-semibold"
       />
+
       <input
         type="file"
         onChange={handleOnChangeFile}
         className="border-2 border-black rounded-md px-3 py-1"
       />
+      
       <Editor onChange={setContent} value={content} />
+
       <button className="bg-black text-white px-4 w-fit mx-auto py-2 font-semibold rounded-md hover:bg-black/85 duration-75">
         Publish Post
       </button>

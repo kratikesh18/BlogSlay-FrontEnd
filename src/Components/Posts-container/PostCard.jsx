@@ -1,8 +1,18 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
+import CommentButton from "../utilComponents/CommentButton";
+import LikeButton from "../utilComponents/LikeButton";
 
-function PostCard({ title, summary, author, createdAt, coverImage, _id }) {
+function PostCard({
+  title,
+  summary,
+  author,
+  createdAt,
+  coverImage,
+  _id,
+  comments, likeCounts
+}) {
   return (
     <div className="flex flex-col border-2 border-gray-400  justify-center items-center rounded-md md:flex-row-reverse w-[85%] h-fit p-3 md:justify-between">
       <div className=" h-[15rem] w-full md:w-1/2 border-2 rounded-md border-black/30 overflow-hidden">
@@ -34,6 +44,10 @@ function PostCard({ title, summary, author, createdAt, coverImage, _id }) {
         <Link to={`/post/${_id}`}>
           <span>Read more...</span>
         </Link>
+        <div className="flex gap-4 self-end">
+          <div>{<CommentButton commentCount={comments?.length} />}</div>
+          <div>{<LikeButton likeCounts = {likeCounts}/>}</div>
+        </div>
       </div>
     </div>
   );

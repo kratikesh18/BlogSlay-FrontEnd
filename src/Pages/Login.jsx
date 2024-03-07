@@ -1,46 +1,66 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Button from "../Components/utilComponents/Button";
-import { useNavigate } from "react-router-dom";
-import { UserContext } from "../context/UserContext";
+import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import { useDispatch } from "react-redux";
+import { login } from "../store/slices/authSlice";
+import { useSelector } from "react-redux";
 function Login() {
-  const url ="https://blogslay-backend.onrender.com"
-  // const url = "http://localhost:4000";
+  // ************ urls **********//
+  // const url ="https://blogslay-backend.onrender.com"
+  const url = import.meta.env.VITE_BACKEND_URL
+
+  // ******* hook calls ********///
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { status } = useSelector((state) => state.authSlice);
+
+  useEffect(() => {
+    if (status) {
+      navigate("/profile");
+    }
+  });
+  //********State definations ******//
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
-  const { setUserInfo } = useContext(UserContext);
+
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  //************ methods *******///
   const handleLogin = async (e) => {
-    setLoading(true);
     e.preventDefault();
+
+    setLoading(true);
+
     const response = await fetch(`${url}/api/v1/user/login`, {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
       credentials: "include",
-      headers: { "Content-Type": "application/json" },
     });
 
     if (response.ok) {
-      toast.success("Successs! loggin in ");
-      response.json().then((data) => {
-        setUserInfo(data.data);
+      const { data } = await response.json();
+
+      if (data) {
+        dispatch(login(data));
         navigate("/");
-      });
+      }
     } else {
       setError("Error Occured while loggin in ");
     }
     setLoading(false);
   };
 
+  // ******** returns *********//
+
   if (loading) {
     return (
       <div className="h-screen w-full flex justify-center items-center">
-        <span class="loader"></span>
+        <span className="loader"></span>
       </div>
     );
   }
@@ -51,7 +71,14 @@ function Login() {
         onSubmit={handleLogin}
       >
         <h1 className="text-2xl font-bold">User Login</h1>
+        <p>
+          Not have account{" "}
+          <Link className="underline text-lg" to={"/signup"}>
+            Sign up.
+          </Link>
+        </p>
         {error && <p className="text-red-700 font-semibold">{error}</p>}
+
         <input
           type="text"
           name="Username"
@@ -72,7 +99,7 @@ function Login() {
         />
 
         <Button type={"submit"} text={"Login"} className={"w-1/3"} />
-        <ToastContainer />
+
       </form>
     </div>
   );
