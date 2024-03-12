@@ -20,7 +20,6 @@ function App() {
     // <UserContextProvider>
     <Routes>
       <Route path="/" element={<Layout />}>
-        
         <Route index element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/SignUp" element={<SignUp />} />
@@ -29,7 +28,7 @@ function App() {
         <Route path="/edit/:id" element={<EditPost />} />
         <Route path="/your-posts" element={<YourPosts />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/editProfile/:id" element={<EditProfile />} />
+        <Route path="/editprofile/:id" element={<EditProfile />} />
         <Route path="/*" element={<NotFound />} />
       </Route>
     </Routes>

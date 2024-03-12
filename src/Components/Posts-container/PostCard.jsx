@@ -11,7 +11,8 @@ function PostCard({
   createdAt,
   coverImage,
   _id,
-  comments, likeCounts
+  comments,
+  likeCounts,
 }) {
   return (
     <div className="flex flex-col border-2 border-gray-400  justify-center items-center rounded-md md:flex-row-reverse w-[85%] h-fit p-3 md:justify-between">
@@ -21,6 +22,7 @@ function PostCard({
             className="h-full w-full object-cover"
             src={coverImage}
             alt={title}
+            loading="lazy"
           />
         </Link>
       </div>
@@ -46,7 +48,9 @@ function PostCard({
         </Link>
         <div className="flex gap-4 self-end">
           <div>{<CommentButton commentCount={comments?.length} />}</div>
-          <div>{<LikeButton likeCounts = {likeCounts}/>}</div>
+          <div className="flex justify-center items-center flex-col gap-1">
+            {<LikeButton />} <p>{likeCounts?.length}</p>
+          </div>
         </div>
       </div>
     </div>

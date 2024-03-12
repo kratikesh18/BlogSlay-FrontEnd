@@ -5,7 +5,7 @@ import { login, logout } from "../../store/slices/authSlice.js";
 import { useSelector } from "react-redux";
 
 function Navbar() {
-  const url = import.meta.env.VITE_BACKEND_URL
+  const url = import.meta.env.VITE_BACKEND_URL;
 
   const dispatch = useDispatch();
   const { status, userdata } = useSelector((state) => state.authSlice);
@@ -29,16 +29,7 @@ function Navbar() {
     }
 
     fetchUserData();
-  }, []);
-
-  const handleLogout = (e) => {
-    //here we just have to invalidate the cookie
-    fetch(`${url}/api/v1/user/logout`, {
-      method: "POST",
-      credentials: "include",
-    });
-    dispatch(logout());
-  };
+  }, [status]);
 
   // const username = userInfo?.username;
   const username = userdata?.username;
@@ -84,12 +75,25 @@ function Navbar() {
 export default Navbar;
 
 // ************************ GARBAGE CODE **************************//
-// useEffect(() => {
-//   fetch("http://localhost:4000/api/v1/user/profile", {
-//     credentials: "include",
-//   }).then((response) =>
-//     response.json().then((userData) => {
-//       setUserInfo(userData);
-//     })
-//   );
-// });
+/*
+useEffect(() => {
+  fetch("http://localhost:4000/api/v1/user/profile", {
+    credentials: "include",
+  }).then((response) =>
+    response.json().then((userData) => {
+      setUserInfo(userData);
+    })
+  );
+});
+
+
+
+const handleLogout = (e) => {
+  //here we just have to invalidate the cookie
+  fetch(`${url}/api/v1/user/logout`, {
+    method: "POST",
+    credentials: "include",
+  });
+  dispatch(logout());
+};
+*/

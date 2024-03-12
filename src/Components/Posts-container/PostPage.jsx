@@ -1,15 +1,17 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import parse from "html-react-parser";
 import { format } from "date-fns";
 import Button from "../utilComponents/Button";
 import { useSelector } from "react-redux";
+import { LikeButton } from "../utilComponents/index.js";
 
 function PostPage() {
-  // const url ="https://blogslay-backend.onrender.com"
-  const url = import.meta.env.VITE_BACKEND_URL
+  const url = useMemo(() => import.meta.env.VITE_BACKEND_URL, []);
 
-  const userdata = useSelector((state) => state.authSlice.userdata);
+  const { status, userdata } = useSelector((state) => state.authSlice);
+
+  const curentUserId = userdata?._id;
 
   const { id } = useParams();
 
@@ -18,6 +20,29 @@ function PostPage() {
 
   const [comment, setComment] = useState("this Post is amazing");
   const [allComments, setAllComments] = useState([]);
+
+  const [isLiked, setIsLiked] = useState(false);
+
+  // useEffect(() => {
+  //   console.log("Like button clicked");
+  // }, [isLiked]);
+
+  const hanandleLike = useCallback(async () => {
+    try {
+      const endPoints = isLiked ? "removelike" : "addlike";
+
+      fetch(`${url}/api/v1/user/${endPoints}`, {
+        method: isLiked ? "DELETE" : "POST",
+        credentials: "include",
+        body: JSON.stringify({ id }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    } catch (error) {
+      console.log(error.message);
+    }
+  }, [isLiked]);
 
   const handlePostComment = async (e) => {
     e.preventDefault();
@@ -48,9 +73,10 @@ function PostPage() {
 
       const data = await response.json();
       if (data) {
-        const { comments } = data?.data;
+        const { comments, likeCounts } = data?.data;
         setAllComments(comments);
         setPostInfo(data?.data);
+        setIsLiked(likeCounts.includes(curentUserId));
       }
     } catch (error) {
       console.log("Error while Fetching the posts", error.message);
@@ -58,10 +84,32 @@ function PostPage() {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     fetchPost();
-  }, []);
+  }, [status]);
 
+  const deleteComment = async (commentId) => {
+    setLoading(true);
+    console.log("Deleting the comment");
+    try {
+      const response = await fetch(`${url}/api/v1/user/deletecomment`, {
+        method: "DELETE",
+        body: JSON.stringify({ commentId }),
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        fetchPost();
+      }
+    } catch (error) {
+      console.log("Error while deleting comment");
+    } finally {
+      setLoading(false);
+    }
+  };
   if (loading) {
     return (
       <div className="h-screen w-full flex justify-center items-center">
@@ -105,15 +153,30 @@ function PostPage() {
             </div>
           </Link>
         )}
+
         <div className="w-full overflow-hidden h-[20rem] rounded-md ">
           <img
             className="w-full h-full object-center object-cover"
             src={postInfo.coverImage}
             alt=""
+            loading="lazy"
           />
         </div>
 
-        <div className="">{parse(postInfo.content)}</div>
+        <div className="browser-css">{parse(postInfo.content)}</div>
+
+        <button
+          className="mt-4 self-center flex gap-3 border-2 p-3 justify-center hover:bg-orange-100 items-center rounded-xl bg-orange-50 "
+          onClick={() => {
+            setIsLiked((prev) => !prev);
+            hanandleLike();
+          }}
+        >
+          <LikeButton />
+          <span className="text-lg font-semibold">
+            {isLiked ? "Liked" : "Like"}
+          </span>
+        </button>
 
         <div className=" flex flex-col gap-3 mt-10">
           <h1 className="text-xl font-semibold">Write a Comment</h1>
@@ -133,7 +196,7 @@ function PostPage() {
         </div>
 
         <div>
-          <h1 className="font-semibold text-xl ">Comments</h1>
+          <h1 className="font-semibold text-xl mb-3 ">Latest Comments</h1>
           <div className="flex flex-col gap-3 pl-4">
             {allComments?.length > 0 ? (
               allComments?.map((comment) => (
@@ -141,7 +204,30 @@ function PostPage() {
                   className="border-4 flex flex-col gap-1 p-3"
                   key={comment._id}
                 >
-                  <h1 className="text-lg">{comment.text}</h1>
+                  <div className=" flex justify-between">
+                    <h1 className="text-lg">{comment.text}</h1>
+                    {comment.author?._id === curentUserId && (
+                      <div className=" flex gap-2">
+                        {
+                          //TODO - add the edit funcionality
+                          /* <Button
+                          className={"py-[4px] text-base font-normal bg-blue-800"}
+                          text={"edit"}
+                        /> */
+                        }
+                        <Button
+                          className={
+                            "py-[4px] text-base font-normal bg-red-800"
+                          }
+                          eventFunc={(e) => {
+                            e.preventDefault();
+                            deleteComment(comment?._id);
+                          }}
+                          text={"delete"}
+                        />
+                      </div>
+                    )}
+                  </div>
                   <span>{comment.author?.username}</span>
                   <time>
                     {format(new Date(comment.createdAt), "MMM d, yyyy HH:mm")}
@@ -161,3 +247,4 @@ function PostPage() {
 }
 
 export default PostPage;
+

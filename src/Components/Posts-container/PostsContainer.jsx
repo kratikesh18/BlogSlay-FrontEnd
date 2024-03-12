@@ -3,7 +3,7 @@ import PostCard from "./PostCard";
 
 function PostsContainer() {
   // const url ="https://blogslay-backend.onrender.com"
-  const url = import.meta.env.VITE_BACKEND_URL
+  const url = import.meta.env.VITE_BACKEND_URL;
 
   const [allposts, setAllposts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -19,7 +19,7 @@ function PostsContainer() {
       const postsData = await response.json();
       console.log("Fetched again ");
       setAllposts(postsData.data);
-      console.log(allposts);
+
       setLoading(false);
     }
 
