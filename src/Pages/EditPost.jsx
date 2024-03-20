@@ -5,7 +5,7 @@ import Button from "../Components/utilComponents/Button";
 
 function EditPost() {
   // const url ="https://blogslay-backend.onrender.com"
-  const url = import.meta.env.VITE_BACKEND_URL
+  const url = import.meta.env.VITE_BACKEND_URL;
 
   const [title, setTitle] = useState("");
   const [summary, setSummary] = useState("");
@@ -96,7 +96,7 @@ function EditPost() {
         value={title}
         minLength={50}
         onChange={(e) => setTitle(e.target.value)}
-        className="border-2 border-black px-3 rounded-md py-1 font-semibold"
+        className="border-2 border-black px-4 rounded-md py-1 font-semibold"
       />
       <input
         type="text"
