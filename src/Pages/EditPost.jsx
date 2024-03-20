@@ -105,7 +105,7 @@ function EditPost() {
         value={summary}
         minLength={100}
         onChange={(e) => setSummary(e.target.value)}
-        className="border-2 border-black px-3 rounded-md py-1 font-semibold"
+        className="border-2 border-black px-2 rounded-md py-1 font-semibold"
       />
 
       <input
