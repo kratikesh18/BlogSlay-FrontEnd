@@ -3,10 +3,20 @@ import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import "react-quill/dist/quill.snow.css";
 import Editor from "../Components/utilComponents/Editor";
+import { useSelector } from "react-redux";
 
 function CreatePost() {
   // const url ="https://blogslay-backend.onrender.com"
-  const url = import.meta.env.VITE_BACKEND_URL
+  const url = import.meta.env.VITE_BACKEND_URL;
+
+  const { status } = useSelector((state) => state.authSlice);
+  if (!status) {
+    return (
+      <div className="text-center text-lg font-semibold">
+        <h1> 403 | Your must have login to visit this page </h1>
+      </div>
+    );
+  }
 
   const [title, setTitle] = useState("");
   const [summary, setSummary] = useState("");
@@ -68,8 +78,10 @@ function CreatePost() {
         onChange={handleOnChangeFile}
         className="border-2 border-black rounded-md px-3 py-1"
       />
-      
-      <Editor onChange={setContent} value={content} />
+
+      <div className={"border-2 border-black rounded-md"}>
+        <Editor onChange={setContent} value={content} />
+      </div>
 
       <button className="bg-black text-white px-4 w-fit mx-auto py-2 font-semibold rounded-md hover:bg-black/85 duration-75">
         Publish Post

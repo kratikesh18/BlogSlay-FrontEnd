@@ -10,6 +10,8 @@ function Home() {
   useEffect(() => {
     
   }, [PostsContainer]);
+
+  
   if (!status) {
     return (
       <div className="flex w-full h-screen justify-center items-center ">

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import PostCard from "../Components/Posts-container/PostCard";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function YourPosts() {
   // const url ="https://blogslay-backend.onrender.com"
-  const url = import.meta.env.VITE_BACKEND_URL
+  const url = import.meta.env.VITE_BACKEND_URL;
 
   const [allMyPosts, setAllMyposts] = useState([]);
 
@@ -20,6 +22,27 @@ function YourPosts() {
     fetchMyPosts();
   }, []);
 
+  const { status } = useSelector((state) => state.authSlice);
+  if (!status) {
+    return (
+      <div className="text-center text-lg font-semibold">
+        <h1> 403 | Your must have login to visit this page </h1>
+      </div>
+    );
+  }
+  if (allMyPosts.length === 0) {
+    return (
+      <div className="text-2xl font-semibold text-center m-3 flex gap-3 flex-col">
+        <h1>You Posted nothing</h1>{" "}
+        <p>
+          Start with your{" "}
+          <Link to={"/create-post"} className="font-medium underline">
+            First Post.
+          </Link>
+        </p>
+      </div>
+    );
+  }
   return (
     <div>
       <h1 className="text-2xl font-semibold  text-center m-3">Your Posts </h1>

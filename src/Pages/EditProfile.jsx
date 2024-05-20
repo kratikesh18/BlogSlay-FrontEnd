@@ -83,13 +83,23 @@ function EditProfile() {
       setLoading(false);
     }
   };
+
+
+  
+  if (!status) {
+    return (
+      <div className="text-center text-lg font-semibold">
+        <h1> 403 | Your must have login to visit this page </h1>
+      </div>
+    );
+  }
   if (loading) {
     return (
       <div className="h-screen w-full flex justify-center items-center">
         <span className="loader"></span>
       </div>
     );
-  }
+  } 
   return (
     <Container className={"gap-4"}>
       {/* <h1 className="text-center text-lg">{id}</h1> */}

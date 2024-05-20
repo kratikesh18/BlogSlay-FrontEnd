@@ -29,7 +29,8 @@ function Editor({ value, onChange }) {
       value={value}
       onChange={onChange}
       modules={modules}
-      className="border-2 border-black rounded-md "
+      
+      className="flex flex-col rounded-md h-[20rem] "
     />
   );
 }

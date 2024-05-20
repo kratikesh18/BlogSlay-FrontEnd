@@ -118,6 +118,13 @@ function PostPage() {
     );
   }
 
+  if (!status) {
+    return (
+      <div className="text-center text-lg font-semibold">
+        <h1> 403 | Your must have login to visit this page </h1>
+      </div>
+    );
+  }
   return (
     postInfo && (
       <div className="flex flex-col w-[80%] mx-auto  gap-3 p-4">
@@ -166,14 +173,16 @@ function PostPage() {
         <div className="browser-css">{parse(postInfo.content)}</div>
 
         <button
-          className="mt-4 self-center flex gap-3 border-2 p-3 justify-center hover:bg-orange-100 items-center rounded-xl bg-orange-50 "
+          className={`mt-4 self-center flex gap-3 border-2 p-3 justify-center hover:bg-orange-200 items-center rounded-xl  ${
+            isLiked ? "bg-orange-100" : "bg-orange-50"
+          }`}
           onClick={() => {
             setIsLiked((prev) => !prev);
             hanandleLike();
           }}
         >
           <LikeButton />
-          <span className="text-lg font-semibold">
+          <span className={`text-lg font-semibold `}>
             {isLiked ? "Liked" : "Like"}
           </span>
         </button>
@@ -247,4 +256,3 @@ function PostPage() {
 }
 
 export default PostPage;
-

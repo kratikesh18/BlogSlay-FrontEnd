@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Editor from "../Components/utilComponents/Editor";
 import { useParams, useNavigate } from "react-router-dom";
 import Button from "../Components/utilComponents/Button";
+import { useSelector } from "react-redux";
 
 function EditPost() {
   // const url ="https://blogslay-backend.onrender.com"
@@ -83,6 +84,15 @@ function EditPost() {
     <div className="h-screen w-full flex justify-center items-center">
       <span class="loader"></span>
     </div>;
+  }
+
+  const { status } = useSelector((state) => state.authSlice);
+  if (!status) {
+    return (
+      <div className="text-center text-lg font-semibold">
+        <h1> 403 | Your must have login to visit this page </h1>
+      </div>
+    );
   }
   return (
     <form

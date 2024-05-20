@@ -6,7 +6,7 @@ import Footer from "./Components/NavBar/Footer.jsx";
 function Layout() { 
   return (
     <div>
-      <main>
+      <main className="flex flex-col min-h-screen justify-between">
         <Navbar />
         <Outlet />
         <Footer />

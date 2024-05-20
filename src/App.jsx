@@ -13,6 +13,7 @@ import {
 import PostPage from "./Components/Posts-container/PostPage";
 import EditPost from "./Pages/EditPost";
 import YourPosts from "./Pages/YourPosts";
+import ChangePassword from "./Pages/ChangePassword";
 // import EditPost from "./Pages/EditPost";
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
         <Route path="/your-posts" element={<YourPosts />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/editprofile/:id" element={<EditProfile />} />
+        <Route path="/changepassword" element={<ChangePassword />} />
         <Route path="/*" element={<NotFound />} />
       </Route>
     </Routes>

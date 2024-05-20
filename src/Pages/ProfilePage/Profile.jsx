@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../store/slices/authSlice";
 import Button from "../../Components/utilComponents/Button";
-import { Container } from "../../Components/utilComponents";
+
 import { LikedPosts, MyComments } from "../../Components";
 
 function Profile() {
@@ -16,7 +16,7 @@ function Profile() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [error, setError] = useState("");
+  // const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [profileData, setProfileData] = useState({});
 
@@ -24,7 +24,9 @@ function Profile() {
 
   const [likedPosts, setLikedPosts] = useState([]);
   const [myComments, setMyComments] = useState([]);
+
   const handleLogout = async (e) => {
+    e.preventDefault();
     //here we just have to invalidate the cookie
     setLoading(false);
     try {
@@ -38,7 +40,7 @@ function Profile() {
         navigate("/login");
       }
     } catch (error) {
-      setError(error.message);
+      console.log(error.message);
     } finally {
       setLoading(false);
     }
@@ -125,10 +127,41 @@ function Profile() {
       setLoading(false);
     }
   };
+
+  const renderComments = () => {
+    if (myComments.length == 0)
+      return (
+        <div className=" text-xl font-semibold text-center">
+          <h1>NO Comments !</h1>{" "}
+          <p>Go Comment on posts to see something here</p>
+        </div>
+      );
+    return myComments.map((eachComment, index) => (
+      <MyComments
+        comment={eachComment}
+        commentFunc={deleteComment}
+        key={index}
+      />
+    ));
+  };
+
+  const renderLikedPosts = () => {
+    if (likedPosts.length == 0)
+      return (
+        <div className=" text-xl font-semibold text-center">
+          <h1>No Liked Posts Found 🫤..!</h1>
+          <p>seems like you dont like liking posts.</p>
+        </div>
+      );
+    return likedPosts.map((post, index) => (
+      <LikedPosts LikedPosts={post} key={index} />
+    ));
+  };
+
   if (!status) {
     return (
-      <div>
-        <h1>403| Your must have login to visit this page </h1>
+      <div className="text-center text-lg font-semibold">
+        <h1> 403 | Your must have login to visit this page </h1>
       </div>
     );
   }
@@ -141,7 +174,8 @@ function Profile() {
     );
   }
   return (
-    <div className="flex w-[95%] mx-auto  mt-4 items-center flex-col ">
+    <div className="flex w-[95%] mx-auto mt-4 items-center flex-col ">
+      {/* for the images */}
       <div className="border-4 relative border-black w-[95%] flex justify-center h-fit flex-col items-center ">
         <div className="w-full h-[22rem]">
           <img
@@ -160,7 +194,8 @@ function Profile() {
         </div>
       </div>
 
-      <div className="flex justify-center items-center flex-col mt-[5rem] ">
+      {/* for the profile data and logout editprofile button */}
+      <div className="flex justify-center items-center flex-col mt-[5rem]  ">
         <h1 className="text-2xl font-bold ">
           Hello, <span>{profileData?.username}</span>
         </h1>
@@ -170,10 +205,15 @@ function Profile() {
             <Button text={"Edit Profile"} />
           </Link>
           <Button text={"Logout"} eventFunc={handleLogout} />
+          <Link to={`/changepassword`}>
+            <Button text={"Change Password"} />
+          </Link>
         </div>
       </div>
-      <div className="w-full">
-        <div className="flex gap-7 w-full justify-center items-center h-[3rem] border-2">
+
+      {/* for the comment and like buttons */}
+      <div className="w-full ">
+        <div className="flex gap-7 w-full justify-center items-center h-[3rem] border py-1 border-gray-500/60 border-x-0 rounded-lg">
           <button
             onClick={() => {
               setShowComments(false);
@@ -194,17 +234,31 @@ function Profile() {
           </button>
         </div>
       </div>
-      {showComments
-        ? myComments &&
-          myComments.map((eachComment, index) => (
-            <MyComments comment={eachComment} commentFunc={deleteComment} />
-          ))
-        : likedPosts &&
-          likedPosts.map((post, index) => (
-            <LikedPosts LikedPosts={post} key={index} />
-          ))}
+
+      {/* for the like and comment section */}
+      <div className="mt-3 min-h-[10rem] flex flex-col justify-center items-center  w-full h-full rounded-md">
+        {showComments ? renderComments() : renderLikedPosts()}
+      </div>
     </div>
   );
 }
 
 export default Profile;
+
+// trash code but works fine
+{
+  /* {showComments
+  ? myComments &&
+    myComments.map((eachComment, index) => (
+      <MyComments
+        comment={eachComment}
+        commentFunc={deleteComment}
+        key={index}
+      />
+    ))
+
+  : likedPosts &&
+    likedPosts.map((post, index) => (
+      <LikedPosts LikedPosts={post} key={index} />
+    ))} */
+}

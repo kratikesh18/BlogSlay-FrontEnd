@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { login, logout } from "../../store/slices/authSlice.js";
+import { login } from "../../store/slices/authSlice.js";
 import { useSelector } from "react-redux";
 
 function Navbar() {
